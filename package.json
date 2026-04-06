@@ -1,0 +1,17 @@
+{
+  "name": "neovm",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "neovm": "./src/cli.ts"
+  },
+  "scripts": {
+    "dev": "bun run src/cli.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
