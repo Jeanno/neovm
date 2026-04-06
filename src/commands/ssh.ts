@@ -50,6 +50,28 @@ export async function run(args: string[]) {
     process.exit(1);
   }
 
+  // Wait for SSH to be ready (retries silently to avoid noisy errors)
+  console.log("Waiting for SSH...");
+  const sshTimeout = 60_000;
+  const sshInterval = 3_000;
+  const sshStart = Date.now();
+  while (Date.now() - sshStart < sshTimeout) {
+    try {
+      await gcloud([
+        "compute", "ssh", name,
+        "--project", project,
+        "--zone", zone,
+        "--command", "true",
+        "--ssh-flag=-o ConnectTimeout=5",
+        "--ssh-flag=-o StrictHostKeyChecking=no",
+        "--quiet",
+      ]);
+      break;
+    } catch {
+      await Bun.sleep(sshInterval);
+    }
+  }
+
   const exitCode = await gcloudInteractive([
     "compute", "ssh", name,
     "--project", project,
