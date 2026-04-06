@@ -13,7 +13,7 @@ export async function run(args: string[]) {
   const flags = parseFlags(args.slice(1));
   const machineType = flags["machine-type"] || config.machineType;
   const zone = flags["zone"] || config.zone;
-  const imageFamily = flags["image"] || "ubuntu-2404-lts";
+  const imageFamily = flags["image"] || "ubuntu-2404-lts-amd64";
 
   console.log(`Creating VM "${name}" (${machineType} in ${zone})...`);
 
