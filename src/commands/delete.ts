@@ -1,6 +1,7 @@
 import { gcloud } from "../gcloud.ts";
 import { resolveZone } from "../resolve.ts";
 import { confirm, closePrompt } from "../prompt.ts";
+import { withSpinner } from "../spinner.ts";
 
 export async function run(args: string[]) {
   const name = args[0];
@@ -21,12 +22,15 @@ export async function run(args: string[]) {
     closePrompt();
   }
 
-  console.log(`Deleting "${name}"...`);
-  await gcloud([
-    "compute", "instances", "delete", name,
-    "--project", project,
-    "--zone", zone,
-    "--quiet",
-  ]);
-  console.log(`"${name}" deleted.`);
+  await withSpinner(
+    `Deleting "${name}"`,
+    `"${name}" deleted`,
+    `Failed to delete "${name}"`,
+    () => gcloud([
+      "compute", "instances", "delete", name,
+      "--project", project,
+      "--zone", zone,
+      "--quiet",
+    ]),
+  );
 }

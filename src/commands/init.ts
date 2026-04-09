@@ -1,6 +1,7 @@
 import { checkGcloud, gcloud, gcloudJson } from "../gcloud.ts";
 import { saveConfig, configExists } from "../config.ts";
 import { ask, confirm, select, closePrompt } from "../prompt.ts";
+import { withSpinner, spinner } from "../spinner.ts";
 
 const GCP_REGIONS = [
   "us-central1",
@@ -39,10 +40,13 @@ export async function run(_args: string[]) {
     // 4. Link billing
     const billingAccount = await setupBilling(project);
 
-    // 5. Enable Compute API
-    console.log("Enabling Compute Engine API...");
-    await gcloud(["services", "enable", "compute.googleapis.com", "--project", project]);
-    console.log("Compute Engine API enabled.\n");
+    await withSpinner(
+      "Enabling Compute Engine API",
+      "Compute Engine API enabled",
+      "Failed to enable Compute Engine API",
+      () => gcloud(["services", "enable", "compute.googleapis.com", "--project", project]),
+    );
+    console.log();
 
     // 6. Region selection
     const zone = await selectRegion();
@@ -121,8 +125,7 @@ async function setupBilling(project: string): Promise<string> {
 }
 
 async function selectRegion(): Promise<string> {
-  console.log("Testing latency to GCP regions...");
-
+  const spin = spinner("Testing latency to GCP regions");
   const results = await Promise.all(
     GCP_REGIONS.map(async (region) => {
       const url = `https://${region}-run.googleapis.com`;
@@ -136,6 +139,7 @@ async function selectRegion(): Promise<string> {
       }
     }),
   );
+  spin.stop("Latency test complete");
 
   results.sort((a, b) => a.latency - b.latency);
   const top5 = results.slice(0, 5);

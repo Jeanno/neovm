@@ -1,11 +1,16 @@
 import { gcloud } from "../gcloud.ts";
 import { resolveZone } from "../resolve.ts";
+import { loadConfig } from "../config.ts";
+import { fetchInstances, renderInstancesTable } from "../instances.ts";
 
 export async function run(args: string[]) {
   const name = args[0];
+
   if (!name) {
-    console.error("Usage: neovm status <name>");
-    process.exit(1);
+    const config = await loadConfig();
+    const instances = await fetchInstances(config.project);
+    renderInstancesTable(instances);
+    return;
   }
 
   const { project, zone } = await resolveZone(name);

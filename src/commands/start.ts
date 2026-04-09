@@ -1,5 +1,6 @@
 import { gcloud } from "../gcloud.ts";
 import { resolveZone } from "../resolve.ts";
+import { withSpinner } from "../spinner.ts";
 
 export async function run(args: string[]) {
   const name = args[0];
@@ -9,7 +10,10 @@ export async function run(args: string[]) {
   }
 
   const { project, zone } = await resolveZone(name);
-  console.log(`Starting "${name}"...`);
-  await gcloud(["compute", "instances", "start", name, "--project", project, "--zone", zone]);
-  console.log(`"${name}" started.`);
+  await withSpinner(
+    `Starting "${name}"`,
+    `"${name}" started`,
+    `Failed to start "${name}"`,
+    () => gcloud(["compute", "instances", "start", name, "--project", project, "--zone", zone]),
+  );
 }

@@ -1,5 +1,6 @@
 import { gcloud, gcloudInteractive } from "../gcloud.ts";
 import { resolveZone } from "../resolve.ts";
+import { spinner, withSpinner } from "../spinner.ts";
 
 export async function run(args: string[]) {
   const name = args[0];
@@ -16,45 +17,25 @@ export async function run(args: string[]) {
     "--zone", zone,
     "--format", "value(status)",
   ]);
-
   const status = statusResult.stdout.trim();
 
   if (status === "TERMINATED" || status === "STOPPED") {
-    console.log(`"${name}" is ${status}. Starting...`);
-    await gcloud(["compute", "instances", "start", name, "--project", project, "--zone", zone]);
-
-    const timeout = 60_000;
-    const interval = 2_000;
-    const start = Date.now();
-
-    while (Date.now() - start < timeout) {
-      await Bun.sleep(interval);
-      const check = await gcloud([
-        "compute", "instances", "describe", name,
-        "--project", project,
-        "--zone", zone,
-        "--format", "value(status)",
-      ]);
-      if (check.stdout.trim() === "RUNNING") {
-        console.log(`"${name}" is running.`);
-        break;
-      }
-    }
-
-    if (Date.now() - start >= timeout) {
-      console.error("Timed out waiting for VM to start.");
-      process.exit(1);
-    }
+    await withSpinner(
+      `Starting "${name}"`,
+      `"${name}" is running`,
+      `Failed to start "${name}"`,
+      () => gcloud(["compute", "instances", "start", name, "--project", project, "--zone", zone]),
+    );
   } else if (status !== "RUNNING") {
     console.error(`"${name}" is in state ${status}. Cannot SSH.`);
     process.exit(1);
   }
 
-  // Wait for SSH to be ready (retries silently to avoid noisy errors)
-  console.log("Waiting for SSH...");
+  const sshSpin = spinner("Waiting for SSH");
   const sshTimeout = 60_000;
   const sshInterval = 3_000;
   const sshStart = Date.now();
+  let sshReady = false;
   while (Date.now() - sshStart < sshTimeout) {
     try {
       await gcloud([
@@ -66,11 +47,17 @@ export async function run(args: string[]) {
         "--ssh-flag=-o StrictHostKeyChecking=no",
         "--quiet",
       ]);
+      sshReady = true;
       break;
     } catch {
       await Bun.sleep(sshInterval);
     }
   }
+  if (!sshReady) {
+    sshSpin.stop("SSH did not become ready in time", false);
+    process.exit(1);
+  }
+  sshSpin.stop("SSH ready");
 
   const exitCode = await gcloudInteractive([
     "compute", "ssh", name,
