@@ -10,6 +10,7 @@ const COMMANDS: Record<string, () => Promise<{ run: (args: string[]) => Promise<
   status:   () => import("./commands/status.ts"),
   ip:       () => import("./commands/ip.ts"),
   delete:   () => import("./commands/delete.ts"),
+  upload:   () => import("./commands/upload.ts"),
 };
 
 async function main() {
@@ -53,6 +54,7 @@ Commands:
   shutdown <name>     Stop a VM
   status <name>       Show VM status
   ip <name>           Print external IP
+  upload <name> <src> Upload files to a VM (optional: [dest], default ~)
   delete <name>       Delete a VM`);
 }
 
