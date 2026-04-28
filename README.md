@@ -4,8 +4,9 @@ A small CLI for managing GCP VMs. Create, SSH, start, stop, upload files — wit
 
 ## Prerequisites
 
-- [Bun](https://bun.com) (runtime)
+- A [Google Cloud](https://console.cloud.google.com/) account with billing enabled
 - [`gcloud` CLI](https://cloud.google.com/sdk/docs/install), authenticated (`gcloud auth login`)
+- [Bun](https://bun.com) (runtime)
 
 ## Install
 
