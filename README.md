@@ -14,7 +14,13 @@ gcloud compute instances create my-vm \
   --image-project=ubuntu-os-cloud
 ```
 
-neovm collapses that to `neovm create my-vm`, with defaults pulled from a one-time `init`. The whole tool is just the basic lifecycle — create, list, ssh, start/stop, upload, delete — wrapped in commands short enough to fit in muscle memory.
+neovm looks like:
+
+```bash
+neovm create my-vm
+```
+
+Defaults come from a one-time `init`. The whole tool is just the basic lifecycle — create, list, ssh, start/stop, upload, delete — wrapped in commands short enough to fit in muscle memory.
 
 ### Who it's for
 
