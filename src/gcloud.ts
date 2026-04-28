@@ -57,4 +57,19 @@ export class GcloudError extends Error {
     super(`gcloud ${args.join(" ")} failed (exit ${exitCode}): ${stderr}`);
     this.name = "GcloudError";
   }
+
+  hint(): string | null {
+    const s = this.stderr;
+    if (/PERMISSION_DENIED/.test(s))
+      return "Check `gcloud auth list` — does your active account have access to this project?";
+    if (/was not found/i.test(s) && this.args.includes("instances"))
+      return "VM not found. Run `neovm list` to see available instances.";
+    if (/billing/i.test(s) && /(disabled|not active|not enabled)/i.test(s))
+      return "Project has no active billing. Re-run `neovm init` or visit https://console.cloud.google.com/billing";
+    if (/Compute Engine API has not been used/i.test(s) || /API .* not enabled/i.test(s))
+      return "Compute Engine API isn't enabled. Run `neovm init` to fix.";
+    if (/quota/i.test(s))
+      return "Quota limit hit. Try a different zone, or request more quota in the Cloud Console.";
+    return null;
+  }
 }

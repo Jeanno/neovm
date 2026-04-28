@@ -2,11 +2,29 @@
 
 A small CLI for managing GCP VMs. Create, SSH, start, stop, upload files — without memorizing `gcloud` flags.
 
+## Quick start
+
+```bash
+bun install -g neovm
+neovm init                # one-time setup (~30s)
+neovm create my-vm        # create your first VM
+neovm ssh my-vm           # SSH in
+```
+
 ## Prerequisites
 
-- A [Google Cloud](https://console.cloud.google.com/) account with billing enabled
-- [`gcloud` CLI](https://cloud.google.com/sdk/docs/install), authenticated (`gcloud auth login`)
-- [Bun](https://bun.com) (runtime)
+You'll need three things before running `neovm init`. macOS commands shown — see [docs/prerequisites.md](docs/prerequisites.md) for Linux & Windows.
+
+1. **[Bun](https://bun.com)** — the runtime.
+   ```bash
+   curl -fsSL https://bun.sh/install | bash
+   ```
+2. **[`gcloud` CLI](https://cloud.google.com/sdk/docs/install)** — install, then authenticate.
+   ```bash
+   brew install --cask google-cloud-sdk
+   gcloud auth login
+   ```
+3. **A [Google Cloud](https://console.cloud.google.com/) account with an active [billing account](https://console.cloud.google.com/billing)** — no project needed; `neovm init` creates one for you.
 
 ## Install
 
@@ -20,7 +38,7 @@ Then run the one-time setup:
 neovm init
 ```
 
-This walks you through picking a GCP project, linking billing, and choosing a region.
+This creates (or reuses) a GCP project for you, links your billing account, enables the Compute Engine API, and picks a region by latency.
 
 ## Usage
 
@@ -34,6 +52,7 @@ neovm shutdown <name>          # stop a VM
 neovm ip <name>                # print external IP
 neovm upload <name> <src> [dst]  # scp files to the VM (default dst: ~)
 neovm delete <name>            # delete a VM
+neovm doctor                   # check setup health
 ```
 
 `create` accepts `--machine-type`, `--zone`, and `--image` flags to override defaults from `~/.neovm.json`.

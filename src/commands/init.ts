@@ -1,6 +1,6 @@
 import { checkGcloud, gcloud, gcloudJson } from "../gcloud.ts";
-import { saveConfig, configExists } from "../config.ts";
-import { ask, confirm, select, closePrompt } from "../prompt.ts";
+import { saveConfig, configExists, loadConfig } from "../config.ts";
+import { ask, select, closePrompt } from "../prompt.ts";
 import { withSpinner, spinner } from "../spinner.ts";
 
 const GCP_REGIONS = [
@@ -19,6 +19,20 @@ const GCP_REGIONS = [
 export async function run(_args: string[]) {
   try {
     console.log("neovm init — Setting up your VM environment\n");
+
+    if (await configExists()) {
+      const existing = await loadConfig();
+      console.log("Existing config at ~/.neovm.json:");
+      console.log(`  project:      ${existing.project}`);
+      console.log(`  zone:         ${existing.zone}`);
+      console.log(`  machine type: ${existing.machineType}\n`);
+      const idx = await select("Config already exists. What would you like to do?", [
+        "Keep existing (exit)",
+        "Re-run init (will overwrite)",
+      ]);
+      if (idx === 0) return;
+      console.log();
+    }
 
     // 1. Check gcloud
     if (!(await checkGcloud())) {
@@ -56,8 +70,12 @@ export async function run(_args: string[]) {
 
     // 8. Write config
     await saveConfig({ project, zone, machineType, billingAccount });
-    console.log("\nConfig saved to ~/.neovm.json");
-    console.log("Ready! Try: neovm create my-vm");
+    console.log("\nSetup complete. Config saved to ~/.neovm.json\n");
+    console.log("Next steps:");
+    console.log("  neovm create <name>   Create your first VM");
+    console.log("  neovm list            List your VMs");
+    console.log("  neovm doctor          Check setup health");
+    console.log("  neovm --help          See all commands");
   } finally {
     closePrompt();
   }
@@ -143,12 +161,20 @@ async function selectRegion(): Promise<string> {
 
   results.sort((a, b) => a.latency - b.latency);
   const top5 = results.slice(0, 5);
+  const fmt = (r: typeof results[number]) => `${r.region} (${r.ok ? `${r.latency}ms` : "timeout"})`;
 
   console.log("\nTop regions by latency:");
-  const items = top5.map((r) => `${r.region} (${r.ok ? `${r.latency}ms` : "timeout"})`);
-  const idx = await select("Select a region:", items);
+  const idx = await select("Select a region:", [...top5.map(fmt), "Show all regions sorted by latency"]);
 
-  const zone = `${top5[idx]!.region}-b`;
+  let chosen: typeof results[number];
+  if (idx === top5.length) {
+    const allIdx = await select("All regions (sorted by latency):", results.map(fmt));
+    chosen = results[allIdx]!;
+  } else {
+    chosen = top5[idx]!;
+  }
+
+  const zone = `${chosen.region}-b`;
   console.log(`Using zone: ${zone}\n`);
   return zone;
 }

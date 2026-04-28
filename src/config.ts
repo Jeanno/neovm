@@ -13,7 +13,8 @@ export interface NeoVMConfig {
 export async function loadConfig(): Promise<NeoVMConfig> {
   const file = Bun.file(CONFIG_PATH);
   if (!(await file.exists())) {
-    console.error('No config found. Run "neovm init" first.');
+    console.error(`No config found at ${CONFIG_PATH}.`);
+    console.error("Run `neovm init` for one-time setup (project, billing, region). Takes ~30s.");
     process.exit(1);
   }
   return file.json();
