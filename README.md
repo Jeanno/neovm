@@ -5,7 +5,7 @@ A small CLI for managing GCP VMs. Create, SSH, start, stop, upload files — wit
 ## Quick start
 
 ```bash
-bun install -g neovm
+bun install -g @jeanno/neovm
 neovm init                # one-time setup (~30s)
 neovm create my-vm        # create your first VM
 neovm ssh my-vm           # SSH in
@@ -29,7 +29,7 @@ You'll need three things before running `neovm init`. macOS commands shown — s
 ## Install
 
 ```bash
-bun install -g neovm
+bun install -g @jeanno/neovm
 ```
 
 Then run the one-time setup:

@@ -1,5 +1,5 @@
 {
-  "name": "neovm",
+  "name": "@jeanno/neovm",
   "version": "0.2.0",
   "description": "A small CLI for managing GCP VMs.",
   "type": "module",
