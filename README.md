@@ -1,6 +1,6 @@
 # neovm
 
-A small CLI for managing GCP VMs. Create, SSH, start, stop, upload files — without memorizing `gcloud` flags.
+A minimalistic CLI tool for managing remote VMs. Create, SSH, start, stop, upload files — without memorizing `gcloud` flags. (GCP today, more backends later.)
 
 ## Quick start
 

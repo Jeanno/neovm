@@ -54,7 +54,7 @@ async function main() {
 }
 
 function printUsage() {
-  console.log(`neovm — GCP VM Manager
+  console.log(`neovm — minimalistic remote VM manager (GCP today, more later)
 
 Usage: neovm <command> [args]
        neovm --version

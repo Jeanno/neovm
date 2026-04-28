@@ -1,7 +1,7 @@
 {
   "name": "@jeanno/neovm",
   "version": "0.2.0",
-  "description": "A small CLI for managing GCP VMs.",
+  "description": "A minimalistic CLI tool for managing remote VMs. GCP today, more backends later.",
   "type": "module",
   "license": "MIT",
   "keywords": ["gcp", "vm", "cli", "gcloud", "compute-engine"],
