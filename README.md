@@ -2,6 +2,31 @@
 
 A minimalistic CLI tool for managing remote VMs. Create, SSH, start, stop, upload files — without memorizing `gcloud` flags. (GCP today, more backends later.)
 
+## Why neovm
+
+Cloud CLIs are powerful but verbose. Spinning up a VM with `gcloud` looks like:
+
+```bash
+gcloud compute instances create my-vm \
+  --project=my-project --zone=us-west1-b \
+  --machine-type=e2-medium \
+  --image-family=ubuntu-2404-lts-amd64 \
+  --image-project=ubuntu-os-cloud
+```
+
+neovm collapses that to `neovm create my-vm`, with defaults pulled from a one-time `init`. The whole tool is just the basic lifecycle — create, list, ssh, start/stop, upload, delete — wrapped in commands short enough to fit in muscle memory.
+
+### Who it's for
+
+- **Solo developers** who occasionally need a cloud VM for builds, GPU work, or scratch experiments, and don't want to memorize provider-specific flags.
+- **Hobbyists and side-project owners** who want lifecycle control (start when working, stop when done) instead of paying 24/7 for a tiny VPS.
+- **Anyone juggling multiple clouds** (eventually) who'd rather learn one small CLI than re-learn `gcloud`, `aws`, `doctl`, and `hcloud` for the same five operations.
+
+### Who it's not for
+
+- Production fleet management, infrastructure-as-code, or team environments — [Terraform](https://www.terraform.io/), [Pulumi](https://www.pulumi.com/), or [Coder](https://coder.com/) are better fits.
+- Ephemeral dev containers with IDE integration — [DevPod](https://devpod.sh/) is purpose-built for that.
+
 ## Quick start
 
 ```bash
