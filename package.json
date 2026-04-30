@@ -1,6 +1,6 @@
 {
   "name": "@jeanno/neovm",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A minimalistic CLI tool for managing remote VMs. GCP today, more backends later.",
   "type": "module",
   "license": "MIT",
