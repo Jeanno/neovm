@@ -61,7 +61,7 @@ Usage: neovm <command> [args]
 
 Commands:
   init                Interactive setup (project, billing, region)
-  create <name>       Create a VM (flags: --machine-type, --zone, --image)
+  create <name>       Create a VM (flags: --machine-type, --zone, --image, --can-ip-forward)
   list                List all VMs
   ssh <name>          SSH into a VM (auto-starts if stopped)
   start <name>        Start a VM

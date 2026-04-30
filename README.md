@@ -86,7 +86,7 @@ neovm delete <name>            # delete a VM
 neovm doctor                   # check setup health
 ```
 
-`create` accepts `--machine-type`, `--zone`, and `--image` flags to override defaults from `~/.neovm.json`.
+`create` accepts `--machine-type`, `--zone`, and `--image` flags to override defaults from `~/.neovm.json`. Pass `--can-ip-forward` to enable GCE IP forwarding (needed for VPN/exit-node setups like Tailscale or WireGuard).
 
 ## Develop
 
