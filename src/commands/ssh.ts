@@ -5,12 +5,12 @@ import { spinner, withSpinner } from "../spinner.ts";
 export async function run(args: string[]) {
   const name = args[0];
   if (!name || name.startsWith("--")) {
-    console.error("Usage: neovm ssh <name> [--iap]");
+    console.error("Usage: neovm ssh <name> [--no-iap]");
     process.exit(1);
   }
 
-  const iap = args.slice(1).includes("--iap");
-  const iapFlag = iap ? ["--tunnel-through-iap"] : [];
+  const noIap = args.slice(1).includes("--no-iap");
+  const iapFlag = noIap ? [] : ["--tunnel-through-iap"];
 
   const { project, zone } = await resolveZone(name);
 

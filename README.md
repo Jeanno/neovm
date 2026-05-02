@@ -77,7 +77,7 @@ This creates (or reuses) a GCP project for you, links your billing account, enab
 neovm create <name>            # create a VM
 neovm list                     # list all VMs
 neovm status [name]            # status of one VM, or all if omitted
-neovm ssh <name> [--iap]       # SSH in (auto-starts if stopped; --iap tunnels via Cloud IAP)
+neovm ssh <name> [--no-iap]    # SSH in (default tunnels via Cloud IAP; --no-iap to use public IP)
 neovm start <name>             # start a VM
 neovm shutdown <name>          # stop a VM
 neovm ip <name>                # print external IP
