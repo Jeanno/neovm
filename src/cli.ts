@@ -63,7 +63,7 @@ Commands:
   init                Interactive setup (project, billing, region)
   create <name>       Create a VM (flags: --machine-type, --zone, --image, --can-ip-forward)
   list                List all VMs
-  ssh <name>          SSH into a VM (auto-starts if stopped)
+  ssh <name>          SSH into a VM (auto-starts if stopped; --iap to tunnel via Cloud IAP)
   start <name>        Start a VM
   shutdown <name>     Stop a VM
   status <name>       Show VM status

@@ -4,10 +4,13 @@ import { spinner, withSpinner } from "../spinner.ts";
 
 export async function run(args: string[]) {
   const name = args[0];
-  if (!name) {
-    console.error("Usage: neovm ssh <name>");
+  if (!name || name.startsWith("--")) {
+    console.error("Usage: neovm ssh <name> [--iap]");
     process.exit(1);
   }
+
+  const iap = args.slice(1).includes("--iap");
+  const iapFlag = iap ? ["--tunnel-through-iap"] : [];
 
   const { project, zone } = await resolveZone(name);
 
@@ -42,6 +45,7 @@ export async function run(args: string[]) {
         "compute", "ssh", name,
         "--project", project,
         "--zone", zone,
+        ...iapFlag,
         "--command", "true",
         "--ssh-flag=-o ConnectTimeout=5",
         "--ssh-flag=-o StrictHostKeyChecking=no",
@@ -63,6 +67,7 @@ export async function run(args: string[]) {
     "compute", "ssh", name,
     "--project", project,
     "--zone", zone,
+    ...iapFlag,
   ]);
   process.exit(exitCode);
 }
